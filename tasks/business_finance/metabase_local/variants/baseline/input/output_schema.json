@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Business Analytics Dashboard Metrics",
+  "description": "Structured metrics extracted from a Metabase BI dashboard",
+  "type": "object",
+  "required": ["total_revenue", "total_completed_orders", "average_order_value", "revenue_by_category", "monthly_revenue", "top_10_customers", "orders_by_device", "orders_by_channel", "event_funnel", "conversion_rate", "unique_purchasing_customers"],
+  "properties": {
+    "total_revenue": {
+      "type": "number",
+      "description": "Sum of total_amount for all completed orders, rounded to 2 decimal places"
+    },
+    "total_completed_orders": {
+      "type": "integer",
+      "description": "Count of orders with status = 'completed'"
+    },
+    "average_order_value": {
+      "type": "number",
+      "description": "Average total_amount for completed orders, rounded to 2 decimal places"
+    },
+    "revenue_by_category": {
+      "type": "object",
+      "description": "Revenue sum per product category for completed orders. Keys are category names, values are rounded to 2 decimal places.",
+      "additionalProperties": { "type": "number" }
+    },
+    "monthly_revenue": {
+      "type": "object",
+      "description": "Revenue sum per month for completed orders. Keys are YYYY-MM format, values rounded to 2 decimal places.",
+      "additionalProperties": { "type": "number" }
+    },
+    "top_10_customers": {
+      "type": "array",
+      "description": "Top 10 customers by lifetime_value, sorted descending.",
+      "items": {
+        "type": "object",
+        "required": ["name", "lifetime_value"],
+        "properties": {
+          "name": { "type": "string", "description": "first_name + space + last_name" },
+          "lifetime_value": { "type": "number", "description": "Rounded to 2 decimal places" }
+        }
+      },
+      "maxItems": 10
+    },
+    "orders_by_device": {
+      "type": "object",
+      "description": "Count of completed orders per device type (desktop, mobile, tablet).",
+      "additionalProperties": { "type": "integer" }
+    },
+    "orders_by_channel": {
+      "type": "object",
+      "description": "Count of completed orders per acquisition channel.",
+      "additionalProperties": { "type": "integer" }
+    },
+    "event_funnel": {
+      "type": "object",
+      "description": "Count of events per event_type (page_view, product_view, add_to_cart, checkout_start, purchase).",
+      "additionalProperties": { "type": "integer" }
+    },
+    "conversion_rate": {
+      "type": "number",
+      "description": "Percentage: (purchase events / page_view events) * 100, rounded to 2 decimal places"
+    },
+    "unique_purchasing_customers": {
+      "type": "integer",
+      "description": "Count of distinct customer_ids with at least one completed order"
+    }
+  }
+}

@@ -29,6 +29,12 @@ def check_host_dependencies(task_paths: Iterable[str]) -> None:
     selected = sorted(set(task_paths))
     if not selected:
         return
+    # Opt-out for hosts outside the supported Ubuntu/Debian set (e.g. macOS), where the
+    # global native-tool list (ffmpeg, findmnt, Rscript, ...) cannot pass even for tasks
+    # that never use those tools.
+    if os.environ.get("ALE_SKIP_HOST_PREFLIGHT", "").strip().lower() in ("1", "true", "yes"):
+        logger.warning("ALE_SKIP_HOST_PREFLIGHT set: skipping host dependency preflight for %s", selected)
+        return
     command = [sys.executable, "-m", __name__, "--json"]
     for path in selected:
         command.extend(["--task", path])

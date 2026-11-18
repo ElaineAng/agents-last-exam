@@ -42,7 +42,9 @@ DEFAULT_SUMMARY_FALLBACK = "No prior history."
 MAX_SUMMARIZATION_RETRIES = 3
 """Number of retry attempts for LLM summarization calls."""
 
-SUMMARIZATION_TIMEOUT = 120
+# DashScope summaries of ~160K-token transcripts took >120 s, burning 3 retries per
+# compaction (24 min in a 2 h run); 300 s lets a slow but successful summary land.
+SUMMARIZATION_TIMEOUT = 300
 """Timeout in seconds for each litellm.acompletion summarization call."""
 
 # ---------------------------------------------------------------------------

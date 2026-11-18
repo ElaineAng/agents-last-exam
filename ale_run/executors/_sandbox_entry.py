@@ -170,6 +170,41 @@ class _LinuxProcessTree:
         raise RuntimeError("solver descendants remain after SIGKILL")
 
 
+class _DarwinProcessGroup:
+    """macOS containment: the worker leads its own session, so its descendants share
+    its process group unless they call setsid themselves (no subreaper on macOS)."""
+
+    def __init__(self) -> None:
+        self.pgid: int | None = None
+
+    def assign(self, pid: int) -> None:
+        self.pgid = pid
+
+    def is_empty(self) -> bool:
+        try:
+            os.killpg(self.pgid, 0)
+        except ProcessLookupError:
+            return True
+        except PermissionError:
+            return False
+        return False
+
+    def stop(self) -> None:
+        if self.pgid is None:
+            return
+        for sig, grace in ((signal.SIGTERM, 2.0), (signal.SIGKILL, _PROCESS_STOP_TIMEOUT_S)):
+            try:
+                os.killpg(self.pgid, sig)
+            except ProcessLookupError:
+                return
+            deadline = time.monotonic() + grace
+            while time.monotonic() < deadline:
+                if self.is_empty():
+                    return
+                time.sleep(0.02)
+        raise RuntimeError("solver descendants remain after SIGKILL")
+
+
 class _JobBasicLimits(ctypes.Structure):
     _fields_ = [
         ("PerProcessUserTimeLimit", ctypes.c_int64),
@@ -291,6 +326,8 @@ def supervise(spec_path: Path, spec: dict, *, protected: bool = False) -> dict:
             process_tree = _LinuxProcessTree()
         elif sys.platform == "win32":
             process_tree = _WindowsJob()
+        elif sys.platform == "darwin":
+            process_tree = _DarwinProcessGroup()
         else:
             raise RuntimeError(f"unsupported process containment: {sys.platform}")
 
@@ -302,8 +339,9 @@ def supervise(spec_path: Path, spec: dict, *, protected: bool = False) -> dict:
                 [sys.executable, "-m", "ale_run.executors._sandbox_entry",
                  str(spec_path), "--worker"],
                 stdin=subprocess.PIPE,
+                start_new_session=isinstance(process_tree, _DarwinProcessGroup),
             )
-            if isinstance(process_tree, _WindowsJob):
+            if isinstance(process_tree, (_WindowsJob, _DarwinProcessGroup)):
                 process_tree.assign(worker.pid)
             worker.stdin.write(b"1")
             worker.stdin.close()

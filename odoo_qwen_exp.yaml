@@ -1,0 +1,27 @@
+# ale_claw + Qwen3.8-Max on business_finance/odoo (variant 0: odoo_compact).
+#
+#     uv run python -m ale_run run odoo_qwen_exp.yaml --dry-run
+#     uv run python -m ale_run run odoo_qwen_exp.yaml
+
+name: odoo_ale_claw_qwen
+
+secret_file: secret/.env
+
+agents:
+  - configs/agents/ale_claw_qwen.yaml
+environment: configs/environments/environment_gcloud.yaml
+
+tasks: selected_tasks/odoo.txt
+
+output:
+  root: .logs/ale
+concurrency: 1
+wall_time_s: 7200
+auto_resume: true
+max_attempts: 1          # a retry would reset odoo_compact and overwrite the residue
+cleanup_mode: keep       # keep the VM so residue.py can inspect odoo_compact afterwards
+
+prompt_suffix: |
+  Complete the task fully autonomously; no user will intervene.
+  When finished, terminate all child processes you started.
+  The user will evaluate your performance based on your delivered artifacts.

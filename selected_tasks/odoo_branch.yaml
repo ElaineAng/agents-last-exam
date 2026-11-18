@@ -1,0 +1,3 @@
+# Variant 0 = branching (odoo-branch CLI + instructions), variant 1 = baseline (no branching).
+- path: business_finance/odoo_branch
+  variants: [0, 1]

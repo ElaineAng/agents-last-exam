@@ -454,6 +454,10 @@ class ClaudeCodeDeployer(BaseAgentDeployer):
         else:
             env.pop("CLAUDE_CODE_MAX_OUTPUT_TOKENS", None)
 
+        if cfg.small_fast_model:
+            env["ANTHROPIC_DEFAULT_HAIKU_MODEL"] = cfg.small_fast_model
+            env["ANTHROPIC_SMALL_FAST_MODEL"] = cfg.small_fast_model
+
         # Provider-driven routing (explicit, not key-presence heuristic).
         if cfg.provider == "openrouter":
             # A literal cfg.api_key (travels with the serialized config) takes

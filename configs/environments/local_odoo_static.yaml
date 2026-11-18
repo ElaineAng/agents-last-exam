@@ -1,0 +1,17 @@
+# ============================================================================
+# local_odoo_static.yaml — attach to the local arm64 Odoo sandbox (no cloud).
+# ============================================================================
+# Start the stack first:  (cd ../../stack && docker compose --profile static up -d)
+# Prefer local_odoo_docker.yaml: this provider reuses one sandbox across runs, so
+# files an agent leaves behind (scripts, memory notes) leak into the next run.
+#   sandbox  XFCE + Chromium + cua-computer-server, host 127.0.0.1:15000 -> 5000
+#   odoo     Odoo 19, reachable from the sandbox as http://odoo:8069
+#   db       PostgreSQL 17 (AgentService template, odoo_compact task DB)
+# The static provider provisions nothing and never deletes the box. Task data
+# (input/prompt.txt, software/launch_odoo.sh) is baked into the sandbox image.
+# Only for business_finance/odoo_local (Linux paths, docker-network hostnames).
+provider: static
+endpoint: http://localhost:15000   # host port 5000 is taken by macOS AirPlay Receiver
+image: ale-ubuntu22                # Linux path conventions: /media/user/data/agenthle
+task_data_source: baked_in_sandbox
+output_path: null

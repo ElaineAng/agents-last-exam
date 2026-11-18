@@ -1,0 +1,85 @@
+{
+  "taskId": "business_finance/odoo_branch",
+  "title": "Odoo Supply-Chain End-To-End Workflow on a branchable database (local)",
+  "summary": "Local port of business_finance/odoo on PostgreSQL 18 versioned with BranchBench's file_copy backend. Variant 0 (branching): the agent gets the odoo-branch CLI and is told to branch before state-damaging actions and merge only verified work into main. Variant 1 (baseline): same task without branching. Graded by the unchanged official database checks on main (odoo_compact).",
+  "category": "business_finance",
+  "software": [
+    "Odoo 19 (Community, Docker)",
+    "PostgreSQL 18 (Docker)",
+    "BranchBench file_copy branch service",
+    "Chromium"
+  ],
+  "taskPrompt": "(generated at load time by tasks/business_finance/odoo_branch/shared.py; see variants/<variant>/input/prompt.txt)",
+  "agentMustDo": [
+    "Open Odoo through `software/launch_odoo.sh` or the desktop icon (http://odoo:8069) and work exclusively inside database `odoo_compact`.",
+    "Follow the full workflow staged in `input/prompt.txt`: master data, tagged sales / purchases, landed cost, subcontracting, two-level manufacturing with shortage recovery, partial + backorder delivery, dropship, EUR invoicing, vendor-bill reconciliation, and the `SSK-0002` return with credit note.",
+    "Stamp the variant run tag (e.g. `odoo_compact`) into searchable document fields such as Reference / Notes / Customer Ref / Vendor Ref on sales orders, purchases, landed cost, and related records.",
+    "Leave the business state exactly as required: landed-cost split `60 / 40`, paid invoices `460 EUR` + `230 EUR`, posted `200 EUR` credit note, serials `SSK-0001..0003` and `CS-0001..0003`, `SSK-0002` returned into `My Co`, and warehouse balances `WH: RM-010=0, RM-020=0` / `My Co: RM-010=4, RM-020=7`.",
+    "Save `lc_split.png`, `invoices.png`, `return_credit.png`, `stock_wh.png`, and `submission.txt` into `output/`."
+  ],
+  "inputFiles": [
+    {
+      "name": "Agent-visible workflow prompt",
+      "format": "`.txt`",
+      "path": "input/prompt.txt",
+      "description": "Full recovered workflow contract for the active variant — master data codes, FX rates, warehouse routes, tagged purchases, subcontracting, shortage recovery, invoicing, expenses, and the mandatory return / credit-note flow."
+    }
+  ],
+  "referenceFiles": [
+    {
+      "name": "Landed-cost split screenshot",
+      "format": "`.png`",
+      "path": "output/lc_split.png",
+      "description": "Landed-cost allocation screen showing `RM-010 = 60.00` and `RM-020 = 40.00`."
+    },
+    {
+      "name": "Paid-invoices screenshot",
+      "format": "`.png`",
+      "path": "output/invoices.png",
+      "description": "Paid customer invoices totalling `460 EUR` and `230 EUR`."
+    },
+    {
+      "name": "Return + credit-note screenshot",
+      "format": "`.png`",
+      "path": "output/return_credit.png",
+      "description": "Return of serial `SSK-0002` back into `My Co` plus the posted and paid `200 EUR` credit note."
+    },
+    {
+      "name": "Warehouse-balances screenshot",
+      "format": "`.png`",
+      "path": "output/stock_wh.png",
+      "description": "Warehouse inventory page showing `WH: RM-010=0, RM-020=0` and `My Co: RM-010=4, RM-020=7`."
+    },
+    {
+      "name": "Operator submission note",
+      "format": "`.txt`",
+      "path": "output/submission.txt",
+      "description": "Short operator note confirming the variant DB / tag and any operator-visible caveats for the run."
+    }
+  ],
+  "evaluation": "The score is the equally weighted fraction of database checks that pass. Checks cover the configured exchange rates, inventory valuation, warehouse routes, the tagged sale, order-linked dropship quantity, production and work orders, bills of materials and operations, staged deliveries and customer invoices, paid purchase and freight bills, landed cost, serials, stock balances, shortage recovery and the expense. Split deliveries and consolidated vendor bills are accepted when the underlying business requirements are met. Database checks do not establish the precise ordering of invoice creation relative to delivery.\n\nA missing or inaccessible task database, or missing required core tables, yields zero. A VM communication failure or a failure executing the evidence query is an evaluation error rather than an agent score. Evidence-file presence and readability are recorded separately and do not change the database score. No LLM judge is used.",
+  "evaluatorCredentials": [],
+  "vm": {
+    "machineType": "e2-standard-4",
+    "snapshot": "cpu-free-ubuntu",
+    "timeout": 7200
+  },
+  "taxonomy": {
+    "domain_id": "6",
+    "domain_code": "business_finance",
+    "subdomain_id": "6.8",
+    "subdomain_code": "supply_chain",
+    "subdomain_name": "Supply Chain & Logistics",
+    "classifier": {
+      "source": "task_all_workflows.csv",
+      "applied_at": "2026-05-28T20:12:46Z",
+      "previous": {
+        "domain_id": "6",
+        "domain_code": "business_finance",
+        "subdomain_id": "6.1",
+        "subdomain_code": "accounting",
+        "subdomain_name": "Accounting & Finance"
+      }
+    }
+  }
+}

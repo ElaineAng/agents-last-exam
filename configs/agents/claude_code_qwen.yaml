@@ -1,0 +1,26 @@
+# claude_code harness driving Qwen3.8-Max through DashScope's Anthropic-compatible
+# endpoint (China region, matching the key's region). Auth: DASHSCOPE_API_KEY
+# from secret/.env or the shell env.
+harness: claude_code
+
+model: qwen3.8-max
+
+config:
+  provider: direct
+  base_url: https://dashscope.aliyuncs.com/apps/anthropic
+  api_key: ${env:DASHSCOPE_API_KEY}
+  # DashScope rejects the CLI's built-in Haiku id; route background calls to Qwen.
+  small_fast_model: qwen3.8-max
+  max_turns: -1
+  max_budget_usd: null
+  max_output_tokens: null
+  dangerously_skip_permissions: true
+  otel_enabled: true
+
+  # Non-Claude model: no --effort, and no explicit thinking param
+  # (null => omit it; the model keeps its native reasoning).
+  effort_level: null
+  max_thinking_tokens: null
+
+  disabled_tools: []
+  cli_version: "@anthropic-ai/claude-code@2.1.280"

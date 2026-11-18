@@ -76,6 +76,10 @@ class DockerProviderConfig:
                 ``docker_image``). Lets one env config pin a specific tag, e.g.
                 a DinD-capable build, without editing the Image registry.
     image_revision  Optional expected SHA-256 image ID or repository digest.
+    network     Docker network to attach the container to (``docker run --network``).
+                Lets the sandbox reach sibling service containers by name, e.g. a
+                compose project's ``<project>_default`` network. "" (default) =
+                Docker's default bridge.
     """
 
     image: str = "ale-kasm"
@@ -93,6 +97,7 @@ class DockerProviderConfig:
     # fuse-overlayfs I/O at high concurrency.
     enable_dind: bool = False
     image_revision: str | None = None
+    network: str = ""
 
 
 def _build_provider_config(raw: dict[str, Any]) -> DockerProviderConfig:
@@ -119,6 +124,7 @@ def _build_provider_config(raw: dict[str, Any]) -> DockerProviderConfig:
         image_ref=str(raw.get("image_ref") or ""),
         enable_dind=bool(raw.get("enable_dind") or False),
         image_revision=image_revision,
+        network=str(raw.get("network") or ""),
     )
 
 
@@ -298,6 +304,8 @@ class DockerProvider(Provider):
             # The image entrypoint starts X and CUA; --init only reaps processes.
             "--entrypoint", image.docker_entrypoint,
         ]
+        if self._cfg.network:
+            run_args.extend(["--network", self._cfg.network])
         if self._cfg.privileged:
             # Needed for tasks whose eval runs nested Docker; under rootless
             # docker the privileged container's root is still user-ns-bounded.

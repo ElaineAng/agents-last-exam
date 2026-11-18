@@ -27,6 +27,7 @@ Base families:
   ``ale-kasm``             — linux (Docker, trycua/cua-ubuntu)
   ``ale-ubuntu22``         — linux (GCE VM)
   ``ale-ubuntu22-docker``  — linux (Docker, exported from the ale-ubuntu22 VM)
+  ``ale-odoo-sandbox``     — linux (Docker, local desktop sandbox for odoo_local)
   ``ale-win10``            — windows (GCE VM)
   ``ale-win-server``       — windows + L4 GPU (GCE VM, g2 machine types)
 
@@ -103,7 +104,7 @@ class Image:
 
 _REGISTRY: dict[str, Image] = {}
 for module_name in (
-    "ale_kasm", "ale_ubuntu22", "ale_ubuntu22_docker", "ale_ubuntu22_docker_v1_1",
+    "ale_kasm", "ale_odoo_sandbox", "ale_ubuntu22", "ale_ubuntu22_docker", "ale_ubuntu22_docker_v1_1",
     "ale_ubuntu22_v1_1", "ale_win10", "ale_win10_v1_1", "ale_win_server",
 ):
     registered_image = import_module(f".{module_name}", __name__).IMAGE

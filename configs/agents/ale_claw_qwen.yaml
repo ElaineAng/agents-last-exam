@@ -1,0 +1,38 @@
+# ale_claw driving Qwen3.8-Max through DashScope's OpenAI-compatible endpoint
+# (China region, matching the key's region). `openai/qwen*` ids route to the
+# in-tree unified Chat Completions loop (LiteLLM's `dashscope/` provider drops
+# images, so do not use it). Auth: DASHSCOPE_API_KEY from
+# secret/.env or the shell env.
+harness: ale_claw
+executor: local
+
+model: openai/qwen3.8-max
+
+config:
+  max_turns: 1000          # the 2h wall_time_s is the real cap; 100 is too few for this workflow
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: ${env:DASHSCOPE_API_KEY}
+  # Per-request timeout (s) for main-loop model calls; litellm retries a timed-out call
+  # up to 3 times. Without it litellm waits 600 s, and one stalled DashScope request
+  # burned a whole 10-minute smoke run.
+  extra_generation_kwargs:
+    timeout: 300
+
+  summary_model: null
+  gui_model: null
+  auxiliary_model: null
+  max_history_turns: null
+  disable_main_computer: false
+  disable_delegate_gui: false
+  disabled_tools: []
+
+  # Qwen3.8-Max grounds clicks on a 0-1000 grid (measured), not screen pixels.
+  coordinate_space: normalized
+
+  thinking_level: null
+  flush_thinking_level: null
+  compaction_thinking_level: null
+  vision_thinking_level: "off"
+  gui_thinking_level: "off"
+
+  image_retention_mode: openclaw

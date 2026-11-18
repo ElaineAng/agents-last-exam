@@ -1,0 +1,90 @@
+{
+ "total_revenue": 562406.2,
+ "total_completed_orders": 3138,
+ "average_order_value": 179.22,
+ "revenue_by_category": {
+  "Books": 26846.78,
+  "Clothing": 85184.61,
+  "Electronics": 270168.08,
+  "Home & Garden": 86329.95,
+  "Sports": 93876.78
+ },
+ "monthly_revenue": {
+  "2024-01": 39519.09,
+  "2024-02": 31166.08,
+  "2024-03": 40931.06,
+  "2024-04": 44938.33,
+  "2024-05": 52733.62,
+  "2024-06": 35144.33,
+  "2024-07": 38721.45,
+  "2024-08": 36769.45,
+  "2024-09": 45463.62,
+  "2024-10": 49070.87,
+  "2024-11": 71457.04,
+  "2024-12": 76491.26
+ },
+ "top_10_customers": [
+  {
+   "name": "Nicole Johnson",
+   "lifetime_value": 70165.7
+  },
+  {
+   "name": "Theresa Anderson",
+   "lifetime_value": 16793.1
+  },
+  {
+   "name": "Samuel Holmes",
+   "lifetime_value": 16110.72
+  },
+  {
+   "name": "Heather Knight",
+   "lifetime_value": 9951.33
+  },
+  {
+   "name": "Michael Davis",
+   "lifetime_value": 9038.43
+  },
+  {
+   "name": "Angela Diaz",
+   "lifetime_value": 9004.13
+  },
+  {
+   "name": "Kenneth Lyons",
+   "lifetime_value": 8146.89
+  },
+  {
+   "name": "Christine Byrd",
+   "lifetime_value": 6893.71
+  },
+  {
+   "name": "Vanessa Buchanan",
+   "lifetime_value": 6213.87
+  },
+  {
+   "name": "Colleen Orr",
+   "lifetime_value": 5857.57
+  }
+ ],
+ "orders_by_device": {
+  "desktop": 1430,
+  "mobile": 1278,
+  "tablet": 430
+ },
+ "orders_by_channel": {
+  "organic_search": 790,
+  "social_media": 649,
+  "paid_search": 618,
+  "email": 477,
+  "referral": 378,
+  "direct": 226
+ },
+ "event_funnel": {
+  "add_to_cart": 2982,
+  "checkout_start": 2032,
+  "page_view": 8040,
+  "product_view": 4962,
+  "purchase": 1984
+ },
+ "conversion_rate": 24.68,
+ "unique_purchasing_customers": 476
+}

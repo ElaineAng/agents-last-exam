@@ -571,13 +571,17 @@ def _convert_response_to_output(response: Any) -> Dict[str, Any]:
 # Unified agent loop
 # ---------------------------------------------------------------------------
 
-@register_agent(models=r"openrouter/.*", priority=10)
+@register_agent(models=r"openrouter/.*|openai/qwen.*", priority=10)
 class UnifiedAgentConfig(AsyncAgentConfig):
     """Unified agent loop for OpenRouter — all providers via acompletion().
 
     Uses function-calling computer tools and OpenRouter's unified reasoning
     parameter.  Registered at priority 10 to take precedence over the
-    per-provider loops for any ``openrouter/`` model string.
+    per-provider loops for any ``openrouter/`` model string. ``openai/qwen*``
+    (Qwen behind an OpenAI-compatible ``base_url``, e.g. DashScope) shares the
+    loop; without it those ids fall to the priority -100 generic_vlm loop.
+    Use ``openai/`` rather than LiteLLM's ``dashscope/`` provider, which drops
+    image content.
     """
 
     async def predict_step(

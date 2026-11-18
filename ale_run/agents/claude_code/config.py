@@ -67,6 +67,12 @@ class ClaudeCodeConfig:
     For ``openrouter`` it becomes ANTHROPIC_AUTH_TOKEN; for ``direct``,
     ANTHROPIC_API_KEY."""
 
+    small_fast_model: str | None = None
+    """Model id for Claude Code's Haiku-tier background requests (sets
+    ANTHROPIC_DEFAULT_HAIKU_MODEL and ANTHROPIC_SMALL_FAST_MODEL). Needed for
+    non-Anthropic endpoints, which reject the CLI's built-in Haiku id.
+    ``None`` ⇒ CLI default."""
+
     # ---- CLI knobs ----
     max_budget_usd: float | None = None
     context_window: int | None = None

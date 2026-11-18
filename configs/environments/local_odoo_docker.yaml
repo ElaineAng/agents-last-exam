@@ -1,0 +1,24 @@
+# Docker provider for business_finance/odoo_local: ALE starts a fresh
+# odoo-sandbox:local container (XFCE + Chromium + cua-server + psql) for every run
+# and attaches it to the compose network where Odoo and PostgreSQL run, so each
+# trial begins from the same sandbox filesystem. The task setup resets the
+# odoo_compact database from the AgentService template.
+#
+# Prerequisites (in ../../stack):
+#   docker build -t odoo-sandbox:local sandbox
+#   docker compose up -d                  # odoo + db on network odoo_residue_default
+#
+# With cleanup_mode: keep the per-run container stays for inspection (named
+# ale-<task>-<hash>); remove it afterwards with `docker rm -f <name>`.
+snapshots:
+  cpu-free-ubuntu:
+    provider: docker
+    image: ale-odoo-sandbox
+    docker:
+      network: odoo_residue_default   # reach odoo:8069 and db:5432 by name
+      shm_size: 2g
+      resolution: [1024, 768]
+      cpus: 4                         # caps for an 8 GB Docker Desktop VM that also
+      memory: 4g                      # runs Odoo + Postgres (task card says e2-standard-4)
+task_data_source: baked_in_sandbox
+output_path: null
